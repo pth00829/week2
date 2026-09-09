@@ -14,6 +14,7 @@ db=pymysql.connect(
 
 
 def save_data(id,pw): # 데이터를 저장하는 함수
+    
     sql1='''
     SELECT user_id
     FROM data
