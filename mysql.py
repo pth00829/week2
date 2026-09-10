@@ -33,8 +33,9 @@ def save_data(id,pw): # 데이터를 저장하는 함수
         with db.cursor() as cursor: # 데이터베이스에 전달을 위해 생성
             cursor.execute(sql2,data) # 내용들을 실행시킨다
             db.commit() 
+        return True
     else:
-        print("아이디 있음") # 아직 구현 실패 아이디가 있을경우 JS를 이용하여 팝업창 띄울 생각
+        return False
 
 def load_data(id,pw): # id, pw 비교를 위해 데이터 로드를 할 함수
     data=[id,pw]
@@ -48,7 +49,10 @@ def load_data(id,pw): # id, pw 비교를 위해 데이터 로드를 할 함수
         cursor.execute(sql,data)
         result=cursor.fetchone()
         db.commit()
-    return result # 반환값으로 튜플을 반환한다. 튜플 속에는 (user_id,user_pw)가 있다.
+        if result!=None:
+            return result # 반환값으로 튜플을 반환한다. 튜플 속에는 (user_id,user_pw)가 있다.
+        else:
+            return None
     
 
 def delete_user(id,pw):
