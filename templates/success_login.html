@@ -4,11 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script src="{{url_for('static',filename='js/success_login.js')}}" defer></script>
 </head>
 <body>
-    <form action="/login">
-        <button type="submit">로그인 성공</button>
+    <form>
+        <button type="button" id="logout_btn">로그아웃</button> <!--버튼을 누르면 /login에 GET 요청을 보낸다.-->
+        <button type="button" id="secession_btn">탈퇴</button>
     </form>
-    
 </body>
 </html>

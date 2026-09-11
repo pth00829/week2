@@ -56,12 +56,17 @@ def load_data(id,pw): # id, pw 비교를 위해 데이터 로드를 할 함수
     
 
 def delete_user(id,pw):
+    result=load_data(id,pw)
     data=[id,pw]
-    sql='''
-    DELETE FROM data
-    WHERE user_id=%s and user_pw=%s
-    ''' # id와 pw를 삭제하라는 명령
+    if result: # result에 값이 있다면
+        sql='''
+        DELETE FROM data
+        WHERE user_id=%s and user_pw=%s
+        ''' # id와 pw를 삭제하라는 명령
 
-    with db.cursor() as cursor:
-        cursor.execute(sql,data)
-        db.commit()
+        with db.cursor() as cursor:
+            cursor.execute(sql,data)
+            db.commit()
+        return True
+    else: # 값이 없다면 아이디 또는 비밀번호가 틀렸다는 뜻
+        return False
