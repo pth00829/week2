@@ -1,0 +1,41 @@
+body {
+    background-color: whitesmoke;
+}
+
+form {
+    width: 300px;
+    margin: 100px auto;
+    background-color: skyblue;
+    padding: 20px;
+    border: 1px solid gray;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+input {
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+}
+
+button {
+    width: 100%;
+    padding: 8px;
+    margin-top: 10px;
+    background-color: blue;
+    color: white;
+    border: none;
+}
+
+a {
+    color: black;
+}
+
+#secession_btn {
+    background-color: white;
+    color: red;
+    border: 1px solid red;
+}
