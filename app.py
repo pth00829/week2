@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 from flask import Flask,request,render_template,redirect,url_for,session,jsonify
-from mysql import delete_user,save_data,load_data
+from mysql import MySql # 기존 함수를 import하던 방식에서 class를 작성하여 import 해보았다.
 
 load_dotenv()
 
@@ -22,7 +22,8 @@ def save_user():
         if request.method=="POST": # 처음 웹페이지에 접속할 때 GET으로 받기 때문에 POST로 받아야 데이터베이스 속 내용을 수정하거나 새로운 내용을 추가하는 등 post의 행위가 실행된다.
             id=request.form.get('new_id') # request.form.get()은 플라스크 웹서버에서 POST 방식으로 전송된 폼(FORM) 데이터 중 특정 이름의 값을 가져오는 함수
             pw=request.form.get('new_pw')
-            login=save_data(id,pw) # mysql.py에서 정의한 함수로 데이터베이스에 회원가입한 id와 pw를 저장한다. 
+            mysql=MySql(id,pw) # 객체 생성
+            login=mysql.save_data()
             if login:
                 return jsonify({"success":True})
             else:
@@ -37,8 +38,9 @@ def compare_data():
         if request.method=="POST":
             id=request.form.get('id')
             pw=request.form.get('pw')
-            result=load_data(id,pw) # mysql.py에 저장된 load_data 함수를 사용했고 역할은 database에 저장된 id, pw를 입력받은 id,pw와 비교하여 일치하면 튜플로 받아온다.
-            if result!=None:
+            mysql=MySql(id,pw)
+            result=mysql.load_data()
+            if result is not None:
                 session['user_id']=result[0] # session['user_id']에 id만 저장한다. id만 저장하는 이유는 id는 중복이 될 수 없기 때문이다. 
                                             # session의 역할은 HTTP는 Stateless 특성으로 인해 이전의 상태를 기억하지 못하기에 session을 이용해 유일한 id를 저장하고 secret_key를 이용해 암호화하여 브라우저 쿠키에 보낸다.
                                             # 쿠키는 페이지를 요청할 때마다 쿠키를 같이 전송하여 누가 보낸 요청인지 서버에 알려준다.
@@ -56,7 +58,8 @@ def delete_data():
         if request.method=="POST":
             id=request.form.get("delete_id")
             pw=request.form.get("delete_pw")
-            result=delete_user(id,pw)
+            mysql=MySql(id,pw)
+            result=mysql.delete_data()
             if result:
                 session.pop('user_id',None)
                 return jsonify({"success":True})
