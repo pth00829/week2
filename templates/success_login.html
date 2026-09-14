@@ -8,9 +8,15 @@
     <script src="{{url_for('static',filename='js/success_login.js')}}" defer></script>
 </head>
 <body>
-    <form>
+    <form id="main">
         <button type="button" id="logout_btn">로그아웃</button> <!--버튼을 누르면 /login에 GET 요청을 보낸다.-->
-        <button type="button" id="secession_btn">탈퇴</button>
+        <button type="button" id="secession_btn">탈퇴</button><br>
+        <textarea name="textarea" id="textarea"></textarea>
+        <p style="display:none" id="p"></p>
+        <button type="submit" id="save">저장하기</button>
+        <button type="reset" id="reset">리셋하기</button>
+        <button type="button" id="update" style="display:none">수정하기</button>
+        <button type="button" id="delete" style="display:none">삭제하기</button>
     </form>
 </body>
 </html>
