@@ -1,0 +1,47 @@
+body {
+    padding: 20px;
+    display:flex;
+    justify-content: center;
+}
+
+#search_p {
+    padding: 20px;
+    border: 1px solid gray;
+    width: 400px;
+}
+
+.search_class {
+    width: 300px;
+    padding: 8px;
+    font-size: 14px;
+}
+
+h3 {
+    font-size: 14px;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+label {
+    margin-right: 5px;
+    font-size: 14px;
+}
+
+#search_btn,
+.finish_btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    margin-top: 10px;
+    margin-right: 5px;
+}
+
+#value {
+    width: 400px;
+    margin-top: 20px;
+}
+
+#value p {
+    border: 1px solid gray;
+    padding: 10px;
+    margin-bottom: 5px;
+}

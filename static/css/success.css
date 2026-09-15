@@ -1,0 +1,54 @@
+body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+#search {
+    margin-bottom: 10px;
+}
+
+#main {
+    padding: 20px;
+    border: 1px solid gray;
+    width: 400px;
+}
+
+.user_btn {
+    text-align: right;
+    margin-bottom: 10px;
+}
+
+.main_txt {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+#textarea {
+    height: 150px;
+}
+
+.p_style {
+    background-color: whitesmoke;
+    border: 1px solid gray;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.main_btn {
+    padding: 8px 16px;
+    font-size: 14px;
+    margin-right: 5px;
+}
+
+.data_btn {
+    margin-top: 10px;
+}

@@ -21,7 +21,7 @@ def save_user():
                 return jsonify({"success":False,"message":"중복된 아이디입니다."})
         return render_template('sign_up.html')
     else:
-        return redirect(url_for('user.basic'))
+        return redirect(url_for('basic'))
 
 @user_bp.route('/login',methods=["POST","GET"]) # login도 id와 pw를 입력받기 때문에 methods에 POST와 GET이 필수이다.
 def compare_data():
@@ -59,10 +59,10 @@ def delete_data():
 
         return render_template('secession.html')
     else:
-        return redirect(url_for('user.basic'))
+        return redirect(url_for('basic'))
 
 @user_bp.route('/logout') 
 def logout():
     session.pop('user_id',None) # session 속 user_id를 삭제한다. 그 이유는 삭제하지 않으면 브라우저를 닫아도 session이 남아서 다른 사람이 사용할 수 있다.
                                 # 또한 None를 활용한 이유는 이미 삭제되어 있는 상태에서 다시 눌렀을 때 None를 주지않으면 KeyError가 발생하기에 이를 방지하고자 넣었다.
-    return redirect(url_for('user.basic'))
+    return redirect(url_for('basic'))

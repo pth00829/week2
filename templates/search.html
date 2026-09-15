@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/search.css')}}">
+    <script src="{{url_for('static',filename='js/search.js')}}" defer></script>
+</head>
+<body>
+    <div id="search_p">
+        <form id="search">
+            <input type="text" name="search_txt" class="search_class" id="search_id">
+            <p>
+                <h3>검색범위</h3>
+                <input type="radio" name="choose" value="title" id="title_chk" checked>
+                <label for="title_chk">제목</label>
+                <input type="radio" name="choose" value="content" id="content_chk">
+                <label for="content_chk">내용</label>
+                <input type="radio" name="choose" value="all" id="all_chk">
+                <label for="all_chk">전체</label>
+            </p>
+            <button type='submit' id="search_btn" class="search_btn_class">검색하기</button>
+            <button type="button" id="finish" class="finish_btn">돌아가기</button>
+        </form>
+        <p id="value"></p>
+    </div>
+    
+</body>
+</html>

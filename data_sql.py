@@ -23,7 +23,8 @@ class Data_MySql:
         sql='''
         CREATE TABLE IF NOT EXISTS board(
         user_id varchar(20) primary key,
-        data varchar(1000),
+        title varchar(100),
+        content varchar(1000),
         CONSTRAINT fk_data FOREIGN KEY (user_id)
             REFERENCES data(user_id)
             ON UPDATE CASCADE
@@ -35,32 +36,32 @@ class Data_MySql:
             cursor.execute(sql)
             db.commit()
 
-    def save_data(self,data):
+    def save_data(self,title,content):
         result=self.load_data()
 
         if result is None:
             sql1='''
-            INSERT INTO board(user_id,data)
-            VALUES(%s,%s)
+            INSERT INTO board(user_id,title,content)
+            VALUES(%s,%s,%s)
             '''
 
             with db.cursor() as cursor:
-                cursor.execute(sql1,[self.id,data])
+                cursor.execute(sql1,[self.id,title,content])
                 db.commit()
         else:
             sql2='''
             UPDATE board
-            SET data=%s
+            SET title=%s, content=%s
             WHERE user_id=%s
             '''
 
             with db.cursor() as cursor:
-                cursor.execute(sql2,[data,self.id])
+                cursor.execute(sql2,[title,content,self.id])
                 db.commit()
 
     def load_data(self):
         sql='''
-        SELECT data
+        SELECT title, content
         FROM board
         WHERE user_id=%s
         '''
@@ -92,3 +93,45 @@ class Data_MySql:
                 return True
             else:
                 return False
+
+    def search_data(self,search_range,data):
+        if search_range=='title':
+            value='%'+data+'%'
+            sql='''
+            SELECT title,content
+            FROM board
+            WHERE title LIKE %s; 
+            '''
+
+            with db.cursor() as cursor:
+                cursor.execute(sql,[value])
+                result=cursor.fetchall()
+                db.commit()
+            return result
+        elif search_range=='content':
+            value='%'+data+'%'
+            sql='''
+            SELECT title,content
+            FROM board
+            WHERE content LIKE %s; 
+            '''
+
+            with db.cursor() as cursor:
+                cursor.execute(sql,[value])
+                result=cursor.fetchall()
+                db.commit()
+            return result
+        
+        elif search_range=='all':
+            value='%'+data+'%'
+            sql='''
+            SELECT title,content
+            FROM board
+            WHERE title LIKE %s or content LIKE %s; 
+            '''
+
+            with db.cursor() as cursor:
+                cursor.execute(sql,[value,value])
+                result=cursor.fetchall()
+                db.commit()
+            return result
