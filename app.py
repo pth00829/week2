@@ -18,7 +18,7 @@ def basic():
     if not session.get('user_id'):
         return render_template('index.html')
     else:
-        return redirect(url_for('board.success_login'))
+        return redirect(url_for('board.board'))
 
 if __name__=="__main__":
-    app.run(debug=True) 
+    app.run(debug=True)

@@ -1,41 +1,47 @@
 body {
-    background-color: whitesmoke;
+    font-family: sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: lightgreen;
+    margin: 0;
 }
 
 form {
-    width: 300px;
-    margin: 100px auto;
-    background-color: skyblue;
-    padding: 20px;
-    border: 1px solid gray;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
 }
 
 label {
     display: block;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
+    font-size: 14px;
 }
 
 input {
-    width: 100%;
-    padding: 5px;
-    margin-top: 5px;
+    padding: 8px;
+    margin-top: 4px;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+    width: 200px;
 }
 
 button {
-    width: 100%;
-    padding: 8px;
     margin-top: 10px;
-    background-color: blue;
-    color: white;
+    padding: 8px 16px;
     border: none;
+    border-radius: 4px;
+    background-color: cornflowerblue;
+    color: white;
+}
+
+button:hover {
+    background-color: royalblue;
 }
 
 a {
-    color: black;
-}
-
-#secession_btn {
-    background-color: white;
-    color: red;
-    border: 1px solid red;
+    color: cornflowerblue;
 }

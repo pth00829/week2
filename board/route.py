@@ -5,7 +5,15 @@ from data_sql import Data_MySql
 
 board_bp=Blueprint('board',__name__,url_prefix='/board')
 
-@board_bp.route('/main',methods=["POST","GET"])
+@board_bp.route('/main')
+def board():
+    user_id=session.get('user_id')
+    if user_id:
+        return render_template('all_board.html')
+    else:
+        return redirect(url_for('basic'))
+
+@board_bp.route('/main/create',methods=["POST","GET"])
 def success_login():
     user_id=session.get('user_id')
     if not user_id:
@@ -24,7 +32,7 @@ def success_login():
                     'content':'저장된 data가 없습니다.'
                 })
         else:
-            return render_template('success_login.html')
+            return render_template('new_board.html')
 
 @board_bp.route('/main/data')
 def db_data():
@@ -35,17 +43,18 @@ def db_data():
     else:
         result=data_sql.load_data()
         if result is not None:
-            return jsonify({"success":True,'title':result[0],'content':result[1]})
+            return jsonify({"success":True,'board_id':result[0],'title':result[1],'content':result[2]})
         else:
             return jsonify({"success":False,'title':None,'content':None})
 
 @board_bp.route('/main/delete')
-def delete_db_data():
+def delete_db():
     user_id=session.get('user_id')
     if user_id:
         data_mysql=Data_MySql(user_id)
+        board_id=request.args.get('board_id')
 
-        if data_mysql.delete_db_data():
+        if data_mysql.delete_db_data(board_id):
             return jsonify({"success":True})
         else:
             return jsonify({"success":False})
@@ -70,5 +79,66 @@ def show_search_data():
                 return jsonify({"success":False,"message":"검색어를 입력해주세요"})
         else:
             return render_template('search.html')
+    else:
+        return redirect(url_for('basic'))
+
+@board_bp.route('/main/correction',methods=["POST","GET"])
+def correction():
+    user_id=session.get('user_id')
+    if user_id:
+        if request.method=='POST':
+
+            return jsonify({"success":True})
+        else:
+            board_id=request.args.get('board_id')
+            data_mysql=Data_MySql(user_id)
+            result=data_mysql.load_data(board_id)
+            return render_template('update_board.html')
+    else:
+        return redirect(url_for('basic'))
+
+@board_bp.route('/main/correction/data',methods=["GET"])
+def correction_data():
+    user_id=session.get('user_id')
+    if user_id:
+        board_id=request.args.get('board_id')
+        data_mysql=Data_MySql(user_id)
+        result=data_mysql.load_data(board_id)
+        title,content=result
+        return jsonify({'success':True,'title':title,'content':content})
+    else:
+        return redirect(url_for('basic'))
+
+@board_bp.route('/main/correction/update',methods=["POST","GET"])
+def update_data():
+    user_id=session.get('user_id')
+    if user_id:
+        data_mysql=Data_MySql(user_id)
+        title=request.form.get('title')
+        content=request.form.get('textarea')
+        board_id=request.args.get('board_id')
+        data_mysql.update_data(title,content,board_id)
+        return jsonify({'success':True,'message':'수정을 완료하였습니다.'})
+    else:
+        return redirect(url_for('basic'))
+
+@board_bp.route('/')
+def main():
+    user_id=session.get('user_id')
+    if user_id:
+        data_mysql=Data_MySql(user_id)
+        result=data_mysql.load_all()
+        if result:
+            return jsonify({'success':True,'data':result})
+        else:
+            return jsonify({"success":False,'message':'저장된 게시글이 없습니다.'})
+    else:
+        return redirect(url_for('basic'))
+
+@board_bp.route('/look')
+def look_board():
+    user_id=session.get('user_id')
+    if user_id:
+        return render_template('one_board.html')
     else:
         return redirect(url_for('basic'))

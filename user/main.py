@@ -41,7 +41,7 @@ def compare_data():
 
         return render_template('login.html')
     else:
-        return redirect(url_for('board.success_login'))
+        return redirect(url_for('board.board'))
 
 @user_bp.route('/secession',methods=["POST","GET"]) # secession 역시 id와 pw를 입력받기 때문에 methods에 POST와 GET이 필수이다.
 def delete_data():

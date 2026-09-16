@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{{url_for('static',filename='css/success.css')}}">
+    <script src="{{url_for('static',filename='js/new_board.js')}}" defer></script>
+</head>
+<body>
+    <p><h1>게시글 작성하기</h1></p><br>
+    <form id="main">
+        <input type="text" id="title" name="title" class="main_txt" placeholder="제목을 입력하세요"><br>
+        <textarea name="textarea" id="textarea" class="main_txt" placeholder="내용을 입력하세요"></textarea>
+        <p class="data_btn">
+            <button type="submit" id="save" class="main_btn">저장하기</button>
+            <button type="reset" id="reset" class="main_btn">리셋하기</button><br>
+            <button type="button" id="return_main">메인페이지로 돌아가기</button>
+        </p>
+    </form>
+</body>
+</html>

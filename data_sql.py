@@ -22,9 +22,10 @@ class Data_MySql:
     def create_table(self):
         sql='''
         CREATE TABLE IF NOT EXISTS board(
-        user_id varchar(20) primary key,
+        user_id varchar(20),
+        board_id INT AUTO_INCREMENT PRIMARY KEY,
         title varchar(100),
-        content varchar(1000),
+        content TEXT,
         CONSTRAINT fk_data FOREIGN KEY (user_id)
             REFERENCES data(user_id)
             ON UPDATE CASCADE
@@ -37,58 +38,46 @@ class Data_MySql:
             db.commit()
 
     def save_data(self,title,content):
-        result=self.load_data()
 
-        if result is None:
-            sql1='''
-            INSERT INTO board(user_id,title,content)
-            VALUES(%s,%s,%s)
-            '''
-
-            with db.cursor() as cursor:
-                cursor.execute(sql1,[self.id,title,content])
-                db.commit()
-        else:
-            sql2='''
-            UPDATE board
-            SET title=%s, content=%s
-            WHERE user_id=%s
-            '''
-
-            with db.cursor() as cursor:
-                cursor.execute(sql2,[title,content,self.id])
-                db.commit()
-
-    def load_data(self):
-        sql='''
-        SELECT title, content
-        FROM board
-        WHERE user_id=%s
+        sql1='''
+        INSERT INTO board(user_id,title,content)
+        VALUES(%s,%s,%s)
         '''
 
         with db.cursor() as cursor:
-            cursor.execute(sql,[self.id])
+            cursor.execute(sql1,[self.id,title,content])
+            db.commit()
+
+    def load_data(self,board_id):
+        sql='''
+        SELECT title, content
+        FROM board
+        WHERE user_id=%s and board_id=%s
+        '''
+
+        with db.cursor() as cursor:
+            cursor.execute(sql,[self.id,board_id])
             result=cursor.fetchone()
 
         return result
 
-    def delete_db_data(self):
+    def delete_db_data(self,board_id):
         sql='''
         DELETE FROM board
-        WHERE user_id=%s
+        WHERE user_id=%s and board_id=%s;
         '''
 
         sql1='''
         SELECT user_id
         FROM board
-        WHERE user_id=%s
+        WHERE user_id=%s;
         '''
 
         with db.cursor() as cursor:
             cursor.execute(sql1,[self.id])
             result=cursor.fetchone()
             if result is not None:
-                cursor.execute(sql,[self.id])
+                cursor.execute(sql,[self.id,board_id])
                 db.commit()
                 return True
             else:
@@ -98,7 +87,7 @@ class Data_MySql:
         if search_range=='title':
             value='%'+data+'%'
             sql='''
-            SELECT title,content
+            SELECT board_id, title,content
             FROM board
             WHERE title LIKE %s; 
             '''
@@ -111,7 +100,7 @@ class Data_MySql:
         elif search_range=='content':
             value='%'+data+'%'
             sql='''
-            SELECT title,content
+            SELECT board_id, title,content
             FROM board
             WHERE content LIKE %s; 
             '''
@@ -125,7 +114,7 @@ class Data_MySql:
         elif search_range=='all':
             value='%'+data+'%'
             sql='''
-            SELECT title,content
+            SELECT board_id, title,content
             FROM board
             WHERE title LIKE %s or content LIKE %s; 
             '''
@@ -135,3 +124,27 @@ class Data_MySql:
                 result=cursor.fetchall()
                 db.commit()
             return result
+
+    def update_data(self,title,content,board_id):
+        sql2='''
+        UPDATE board
+        SET title=%s, content=%s
+        WHERE user_id=%s and board_id=%s
+        '''
+
+        with db.cursor() as cursor:
+            cursor.execute(sql2,[title,content,self.id,board_id])
+            db.commit()
+
+    def load_all(self):
+        sql='''
+        SELECT board_id,title,content
+        FROM board
+        WHERE user_id=%s;
+        '''
+
+        with db.cursor() as cursor:
+            cursor.execute(sql,[self.id])
+            result=cursor.fetchall()
+
+        return result
