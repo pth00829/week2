@@ -2,6 +2,7 @@ const params = new URLSearchParams(window.location.search)
 const boardId = params.get('board_id')  // "5" 문자열로 꺼내짐
 const title=document.getElementById('title')
 const textarea=document.getElementById('textarea')
+const secret=document.getElementById('secret_box')
 
 
 if(boardId){
@@ -11,6 +12,13 @@ if(boardId){
         if(data.success){
             title.value = data.title
             textarea.value = data.content
+            if(data.secret===1){
+                secret.checked=true
+            }
+            else{
+                secret.checked=false
+            }
+            
         }
     })
 }

@@ -9,7 +9,7 @@ document.getElementById('sign_up').addEventListener('submit',function(e) {
     .then(res=>res.json())
     .then(data=>{
         if(data.success) {
-            window.location.href='/user/'
+            window.location.href='/'
         }
         else {
             alert(data.message)

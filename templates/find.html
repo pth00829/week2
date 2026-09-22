@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button type="button" id="find_id">아이디 찾기</button><br>
+    <button type="button" id="find_pw">비밀번호 찾기</button>
+    <script>
+        document.getElementById('find_id').addEventListener('click',function(){
+            window.location.href='/user/find/id'
+        })
+
+        document.getElementById('find_pw').addEventListener('click',function(){
+            window.location.href='/user/find/pw'
+        })
+    </script>
+</body>
+</html>

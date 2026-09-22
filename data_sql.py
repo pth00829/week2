@@ -26,6 +26,7 @@ class Data_MySql:
         board_id INT AUTO_INCREMENT PRIMARY KEY,
         title varchar(100),
         content TEXT,
+        secret BOOLEAN,
         CONSTRAINT fk_data FOREIGN KEY (user_id)
             REFERENCES data(user_id)
             ON UPDATE CASCADE
@@ -37,20 +38,20 @@ class Data_MySql:
             cursor.execute(sql)
             db.commit()
 
-    def save_data(self,title,content):
+    def save_data(self,title,content,secret):
 
         sql1='''
-        INSERT INTO board(user_id,title,content)
-        VALUES(%s,%s,%s)
+        INSERT INTO board(user_id,title,content,secret)
+        VALUES(%s,%s,%s,%s)
         '''
 
         with db.cursor() as cursor:
-            cursor.execute(sql1,[self.id,title,content])
+            cursor.execute(sql1,[self.id,title,content,secret])
             db.commit()
 
     def load_data(self,board_id):
         sql='''
-        SELECT title, content
+        SELECT title, content, secret
         FROM board
         WHERE user_id=%s and board_id=%s
         '''
@@ -89,7 +90,7 @@ class Data_MySql:
             sql='''
             SELECT board_id, title,content
             FROM board
-            WHERE title LIKE %s; 
+            WHERE title LIKE %s and secret=0; 
             '''
 
             with db.cursor() as cursor:
@@ -102,7 +103,7 @@ class Data_MySql:
             sql='''
             SELECT board_id, title,content
             FROM board
-            WHERE content LIKE %s; 
+            WHERE content LIKE %s and secret=0; 
             '''
 
             with db.cursor() as cursor:
@@ -116,7 +117,7 @@ class Data_MySql:
             sql='''
             SELECT board_id, title,content
             FROM board
-            WHERE title LIKE %s or content LIKE %s; 
+            WHERE (title LIKE %s or content LIKE %s) and secret=0; 
             '''
 
             with db.cursor() as cursor:
@@ -125,15 +126,15 @@ class Data_MySql:
                 db.commit()
             return result
 
-    def update_data(self,title,content,board_id):
+    def update_data(self,title,content,board_id,secret):
         sql2='''
         UPDATE board
-        SET title=%s, content=%s
+        SET title=%s, content=%s, secret=%s
         WHERE user_id=%s and board_id=%s
         '''
 
         with db.cursor() as cursor:
-            cursor.execute(sql2,[title,content,self.id,board_id])
+            cursor.execute(sql2,[title,content,secret,self.id,board_id])
             db.commit()
 
     def load_all(self):

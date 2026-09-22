@@ -127,3 +127,7 @@ document.getElementById('logout_btn').addEventListener('click',function(){
 document.getElementById('delete_user').addEventListener('click',function(a) {
     window.location.href='/user/secession'
 })
+
+document.getElementById('profile').addEventListener('click',function(){
+    window.location.href='/board/profile'
+})

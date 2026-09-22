@@ -2,6 +2,7 @@ from flask import Blueprint,request,redirect,session,url_for,render_template,jso
 import os
 from dotenv import load_dotenv
 from data_sql import Data_MySql
+from mysql import MySql
 
 board_bp=Blueprint('board',__name__,url_prefix='/board')
 
@@ -22,8 +23,12 @@ def success_login():
         if request.method=="POST":
             data=request.form.get('textarea')
             title=request.form.get('title')
+            if request.form.get('secret')=='true':
+                secret=True
+            else:
+                secret=False
             data_sql=Data_MySql(user_id)
-            data_sql.save_data(title,data)
+            data_sql.save_data(title,data,secret)
             if data is not None:
                 return jsonify({'success':True,'title':title,'content':data})
             else:
@@ -104,8 +109,8 @@ def correction_data():
         board_id=request.args.get('board_id')
         data_mysql=Data_MySql(user_id)
         result=data_mysql.load_data(board_id)
-        title,content=result
-        return jsonify({'success':True,'title':title,'content':content})
+        title,content,secret=result
+        return jsonify({'success':True,'title':title,'content':content,'secret':secret})
     else:
         return redirect(url_for('basic'))
 
@@ -117,7 +122,11 @@ def update_data():
         title=request.form.get('title')
         content=request.form.get('textarea')
         board_id=request.args.get('board_id')
-        data_mysql.update_data(title,content,board_id)
+        if request.form.get('secret')=='true':
+            secret=True
+        else:
+            secret=False
+        data_mysql.update_data(title,content,board_id,secret)
         return jsonify({'success':True,'message':'수정을 완료하였습니다.'})
     else:
         return redirect(url_for('basic'))
@@ -140,5 +149,38 @@ def look_board():
     user_id=session.get('user_id')
     if user_id:
         return render_template('one_board.html')
+    else:
+        return redirect(url_for('basic'))
+
+@board_bp.route('/profile')
+def user_profile():
+    return render_template('profile.html')
+
+@board_bp.route('/profile/get-data')
+def profile_data():
+    user_id=session.get('user_id')
+    if user_id:
+        mysql=MySql()
+        result=mysql.load_all(user_id)
+        if result:
+            return jsonify({'success':True,'data':result})
+        else:
+            return jsonify({'success':False,'message':'뭔가 잘못됨'})
+    else:
+        return redirect(url_for('basic'))
+
+@board_bp.route('/profile/edit')
+def edit_profile():
+    return render_template('edit_profile.html')
+
+@board_bp.route('/profile/edit-data',methods=['POST'])
+def edit_user_data():
+    user_id=session.get('user_id')
+    if user_id:
+        name=request.form.get('user_name')
+        school=request.form.get('user_school')
+        mysql=MySql()
+        mysql.edit_data(user_id,name,school)
+        return jsonify({'success':True})
     else:
         return redirect(url_for('basic'))

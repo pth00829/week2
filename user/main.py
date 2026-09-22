@@ -13,8 +13,10 @@ def save_user():
         if request.method=="POST": # 처음 웹페이지에 접속할 때 GET으로 받기 때문에 POST로 받아야 데이터베이스 속 내용을 수정하거나 새로운 내용을 추가하는 등 post의 행위가 실행된다.
             id=request.form.get('new_id') # request.form.get()은 플라스크 웹서버에서 POST 방식으로 전송된 폼(FORM) 데이터 중 특정 이름의 값을 가져오는 함수
             pw=request.form.get('new_pw')
-            mysql=MySql(id,pw) # 객체 생성
-            login=mysql.save_data()
+            name=request.form.get('name')
+            school=request.form.get('school')
+            mysql=MySql() # 객체 생성
+            login=mysql.save_data(id,pw,name,school)
             if login:
                 return jsonify({"success":True})
             else:
@@ -29,8 +31,8 @@ def compare_data():
         if request.method=="POST":
             id=request.form.get('id')
             pw=request.form.get('pw')
-            mysql=MySql(id,pw)
-            result=mysql.load_data()
+            mysql=MySql()
+            result=mysql.load_data(id,pw)
             if result is not None:
                 session['user_id']=result[0] # session['user_id']에 id만 저장한다. id만 저장하는 이유는 id는 중복이 될 수 없기 때문이다. 
                                             # session의 역할은 HTTP는 Stateless 특성으로 인해 이전의 상태를 기억하지 못하기에 session을 이용해 유일한 id를 저장하고 secret_key를 이용해 암호화하여 브라우저 쿠키에 보낸다.
@@ -49,8 +51,8 @@ def delete_data():
         if request.method=="POST":
             id=request.form.get("delete_id")
             pw=request.form.get("delete_pw")
-            mysql=MySql(id,pw)
-            result=mysql.delete_data()
+            mysql=MySql()
+            result=mysql.delete_data(id,pw)
             if result:
                 session.pop('user_id',None)
                 return jsonify({"success":True})
@@ -66,3 +68,34 @@ def logout():
     session.pop('user_id',None) # session 속 user_id를 삭제한다. 그 이유는 삭제하지 않으면 브라우저를 닫아도 session이 남아서 다른 사람이 사용할 수 있다.
                                 # 또한 None를 활용한 이유는 이미 삭제되어 있는 상태에서 다시 눌렀을 때 None를 주지않으면 KeyError가 발생하기에 이를 방지하고자 넣었다.
     return redirect(url_for('basic'))
+
+@user_bp.route('/find')
+def find():
+    return render_template('find.html')
+
+@user_bp.route('/find/id',methods=['POST','GET'])
+def find_id():
+    if request.method=="POST":
+        name=request.form.get('user_name')
+        school=request.form.get('user_school')
+        mysql=MySql()
+        result=mysql.find_data(name,school)
+        if result:
+            return jsonify({'success':True,'data':result})
+        else:
+            return jsonify({'success':False,'message':'ID가 존재하지 않습니다.'})
+    else:
+        return render_template('find_id.html')
+
+@user_bp.route('/find/pw',methods=['POST','GET'])
+def find_pw():
+    if request.method=="POST":
+        id=request.form.get('user_id')
+        name=request.form.get('user_name')
+        school=request.form.get('user_school')
+        pw=request.form.get('user_pw')
+        mysql=MySql()
+        mysql.change_pw(id,pw,name,school)
+        return jsonify({'success':True,'url':'/'})
+    else:
+        return render_template('find_pw.html')
