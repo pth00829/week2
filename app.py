@@ -8,6 +8,13 @@ from board.route import board_bp
 load_dotenv()
 
 app=Flask(__name__)
+
+UPLOAD_FOLDER='./uploads/'
+app.config['UPLOAD_FOLDER']=UPLOAD_FOLDER
+
+
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
 app.register_blueprint(user_bp)
 app.register_blueprint(board_bp)
 

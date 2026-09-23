@@ -74,7 +74,7 @@ class MySql:
 
     def delete_data(self,id,pw):
 
-        result=self.load_data()
+        result=self.load_data(id,pw)
         if result is not None:
             sql='''
             DELETE FROM data
@@ -131,4 +131,5 @@ class MySql:
 
         with db.cursor() as cursor:
             cursor.execute(sql,[name,school,id])
+            db.commit()
             

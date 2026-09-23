@@ -1,4 +1,4 @@
-from flask import Blueprint,request,redirect,session,url_for,render_template,jsonify
+from flask import Blueprint,request,redirect,session,url_for,render_template,jsonify,send_file
 import os
 from dotenv import load_dotenv
 from data_sql import Data_MySql
@@ -18,11 +18,14 @@ def board():
 def success_login():
     user_id=session.get('user_id')
     if not user_id:
-        return redirect(url_for('compare_data'))
+        return redirect(url_for('user.compare_data'))
     else:
         if request.method=="POST":
             data=request.form.get('textarea')
             title=request.form.get('title')
+            file=request.files.get('file')
+            if file:
+                file.save('./uploads/'+file.filename)
             if request.form.get('secret')=='true':
                 secret=True
                 secret_pw=request.form.get('secret_pw')
@@ -188,3 +191,21 @@ def edit_user_data():
         return jsonify({'success':True})
     else:
         return redirect(url_for('basic'))
+
+@board_bp.route('/upload',methods=['POST'])
+def upload():
+    if request.method=='POST':
+        f=request.files.get('file')
+        if f:
+            f.save('./uploads/'+f.filename)
+            return redirect(url_for('board.board'))
+        else:
+            return redirect(url_for('board.board'))
+
+@board_bp.route('/download',methods=['POST'])
+def download():
+    if request.method=="POST":
+        path='./uploads/'
+        return send_file(path+request.form.get('file_name'),as_attachment=True)
+    else:
+        redirect(url_for('board.board'))

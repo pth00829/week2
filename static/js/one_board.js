@@ -28,6 +28,7 @@ fetch(`/board/main/correction/data?board_id=${board_id}`)
             })
         }
         else{
+            document.getElementById('pw_div').style.display='none'
             const newH2=document.createElement('h2')
             const newSpan=document.createElement('span')
 
