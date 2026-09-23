@@ -8,11 +8,21 @@
     <link rel="stylesheet" href="{{url_for('static',filename='css/success.css')}}">
 </head>
 <body>
+    <div id="pw_div">
+        <form>
+            <label>
+                비밀글 비밀번호를 입력해주세요 <input type="password" id="input_pw">
+            </label>
+            <button type="button" id="secret_btn">확인</button>
+        </form>
+    </div>
     <div id="look_board">
 
     </div>
-    <button type="button" id="update_btn">수정하기</button>
-    <button type="button" id="delete_btn">삭제하기</button><br>
-    <button type="button" id="return_main">메인페이지로 돌아가기</button>
+    <div id="btn_div">
+        <button type="button" id="update_btn">수정하기</button>
+        <button type="button" id="delete_btn">삭제하기</button><br>
+        <button type="button" id="return_main">메인페이지로 돌아가기</button>
+    </div>
 </body>
 </html>

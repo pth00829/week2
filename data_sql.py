@@ -27,6 +27,7 @@ class Data_MySql:
         title varchar(100),
         content TEXT,
         secret BOOLEAN,
+        secret_pw varchar(20),
         CONSTRAINT fk_data FOREIGN KEY (user_id)
             REFERENCES data(user_id)
             ON UPDATE CASCADE
@@ -38,20 +39,20 @@ class Data_MySql:
             cursor.execute(sql)
             db.commit()
 
-    def save_data(self,title,content,secret):
+    def save_data(self,title,content,secret,secret_pw):
 
         sql1='''
-        INSERT INTO board(user_id,title,content,secret)
-        VALUES(%s,%s,%s,%s)
+        INSERT INTO board(user_id,title,content,secret,secret_pw)
+        VALUES(%s,%s,%s,%s,%s)
         '''
 
         with db.cursor() as cursor:
-            cursor.execute(sql1,[self.id,title,content,secret])
+            cursor.execute(sql1,[self.id,title,content,secret,secret_pw])
             db.commit()
 
     def load_data(self,board_id):
         sql='''
-        SELECT title, content, secret
+        SELECT title, content, secret, secret_pw
         FROM board
         WHERE user_id=%s and board_id=%s
         '''
@@ -126,15 +127,15 @@ class Data_MySql:
                 db.commit()
             return result
 
-    def update_data(self,title,content,board_id,secret):
+    def update_data(self,title,content,board_id,secret,secret_pw):
         sql2='''
         UPDATE board
-        SET title=%s, content=%s, secret=%s
+        SET title=%s, content=%s, secret=%s, secret_pw=%s
         WHERE user_id=%s and board_id=%s
         '''
 
         with db.cursor() as cursor:
-            cursor.execute(sql2,[title,content,secret,self.id,board_id])
+            cursor.execute(sql2,[title,content,secret,secret_pw,self.id,board_id])
             db.commit()
 
     def load_all(self):

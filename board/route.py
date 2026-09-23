@@ -25,10 +25,12 @@ def success_login():
             title=request.form.get('title')
             if request.form.get('secret')=='true':
                 secret=True
+                secret_pw=request.form.get('secret_pw')
             else:
                 secret=False
+                secret_pw=None
             data_sql=Data_MySql(user_id)
-            data_sql.save_data(title,data,secret)
+            data_sql.save_data(title,data,secret,secret_pw)
             if data is not None:
                 return jsonify({'success':True,'title':title,'content':data})
             else:
@@ -109,8 +111,8 @@ def correction_data():
         board_id=request.args.get('board_id')
         data_mysql=Data_MySql(user_id)
         result=data_mysql.load_data(board_id)
-        title,content,secret=result
-        return jsonify({'success':True,'title':title,'content':content,'secret':secret})
+        title,content,secret,secret_pw=result
+        return jsonify({'success':True,'title':title,'content':content,'secret':secret,'secret_pw':secret_pw})
     else:
         return redirect(url_for('basic'))
 
@@ -124,9 +126,11 @@ def update_data():
         board_id=request.args.get('board_id')
         if request.form.get('secret')=='true':
             secret=True
+            secret_pw=request.form.get('secret_pw')
         else:
             secret=False
-        data_mysql.update_data(title,content,board_id,secret)
+            secret_pw=None
+        data_mysql.update_data(title,content,board_id,secret,secret_pw)
         return jsonify({'success':True,'message':'수정을 완료하였습니다.'})
     else:
         return redirect(url_for('basic'))

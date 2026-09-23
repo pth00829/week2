@@ -4,6 +4,15 @@ const title=document.getElementById('title')
 const textarea=document.getElementById('textarea')
 const secret=document.getElementById('secret_box')
 
+document.getElementById('secret_box').addEventListener('change',function(){
+    if(document.getElementById('secret_box').checked){
+        document.getElementById('pw').disabled=false
+    }
+    else{
+        document.getElementById('pw').disabled=true
+    }
+})
+
 
 if(boardId){
     fetch(`/board/main/correction/data?board_id=${boardId}`)
@@ -25,6 +34,13 @@ if(boardId){
 
 document.getElementById('main').addEventListener('submit',function(f){
     f.preventDefault();
+
+    if(document.getElementById('secret_box').value==='true'){
+        if(document.getElementById('pw').value===""){
+            alert('비밀번호를 입력하세요.')
+            return;
+        }
+    }
     const formData=new FormData(this)
 
     fetch(`/board/main/correction/update?board_id=${boardId}`,{
@@ -40,6 +56,7 @@ document.getElementById('main').addEventListener('submit',function(f){
         else{
             alert('수정에 실패하였습니다.')
         }
+        
     }).catch(err=>console.error(err))
 })
 

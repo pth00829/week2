@@ -12,7 +12,12 @@
     <form id="main">
         <input type="text" id="title" name="title" class="main_txt"><br>
         <textarea name="textarea" id="textarea" class="main_txt"></textarea>
-        <input type="checkbox" name="secret" value="true" id="secret_box"> 비밀글
+        <label>
+            비밀글 <input type="checkbox" name="secret" value="true" id="secret_box">
+        </label>
+        <label>
+            비밀번호 <input type="password" name="secret_pw" id="pw" placeholder="비밀번호를 입력하시오.">
+        </label>
         <p class="data_btn">
             <button type="submit" id="update" class="main_btn">수정하기</button>
             <button type="reset" id="reset" class="main_btn">리셋하기</button><br>

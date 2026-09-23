@@ -6,13 +6,36 @@ fetch(`/board/main/correction/data?board_id=${board_id}`)
 .then(res=>res.json())
 .then(data=>{
     if(data.success){
-        const newH2=document.createElement('h2')
-        const newSpan=document.createElement('span')
+        if(data.secret===1){
+            document.getElementById('look_board').style.display='none'
+            document.getElementById('btn_div').style.display='none'
+            document.getElementById('secret_btn').addEventListener('click',function(){
+                if(document.getElementById('input_pw').value===data.secret_pw){
+                    document.getElementById('look_board').style.display='block'
+                    document.getElementById('pw_div').style.display='none'
+                    document.getElementById('btn_div').style.display='block'
+                    const newH2=document.createElement('h2')
+                    const newSpan=document.createElement('span')
 
-        newH2.textContent=data.title
-        newSpan.textContent=data.content
-        look_board.appendChild(newH2)
-        look_board.appendChild(newSpan)
+                    newH2.textContent=data.title
+                    newSpan.textContent=data.content
+                    look_board.appendChild(newH2)
+                    look_board.appendChild(newSpan)
+                }
+                else{
+                    alert('비밀번호가 틀렸습니다.')
+                }
+            })
+        }
+        else{
+            const newH2=document.createElement('h2')
+            const newSpan=document.createElement('span')
+
+            newH2.textContent=data.title
+            newSpan.textContent=data.content
+            look_board.appendChild(newH2)
+            look_board.appendChild(newSpan)
+        }
     }
     else{
         alert('데이터 불러오기 실패')

@@ -18,6 +18,15 @@ document.getElementById('main').addEventListener('submit',function(e){
     })
 })
 
+document.getElementById('secret_box').addEventListener('change',function(){
+    if(document.getElementById('secret_box').checked){
+        document.getElementById('pw').disabled=false
+    }
+    else{
+        document.getElementById('pw').disabled=true
+    }
+})
+
 document.getElementById('return_main').addEventListener('click',function(){
     window.location.href='/board/main'
 })
