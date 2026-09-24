@@ -30,4 +30,3 @@ document.getElementById('secret_box').addEventListener('change',function(){
 document.getElementById('return_main').addEventListener('click',function(){
     window.location.href='/board/main'
 })
-

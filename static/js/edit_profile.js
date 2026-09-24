@@ -1,12 +1,12 @@
-const name=document.getElementById('name')
+const name1=document.getElementById('name')
 const school=document.getElementById('school')
 
 fetch('/board/profile/get-data')
 .then(res=>res.json())
 .then(data=>{
     if(data.success){
-        name.value=data.data[0]
-        school.value=data.data[1]
+        name1.value=data.name
+        school.value=data.school
     }
 })
 
@@ -21,6 +21,9 @@ document.getElementById('edit_user_data').addEventListener('submit',function(e){
     .then(res=>res.json())
     .then(data=>{
         if(data.success){
+            window.location.href='/board/profile'
+        }
+        else{
             window.location.href='/board/profile'
         }
     })

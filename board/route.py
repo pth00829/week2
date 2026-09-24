@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from data_sql import Data_MySql
 from mysql import MySql
+from file import File
 
 board_bp=Blueprint('board',__name__,url_prefix='/board')
 
@@ -21,20 +22,25 @@ def success_login():
         return redirect(url_for('user.compare_data'))
     else:
         if request.method=="POST":
+            data_sql=Data_MySql(user_id)
             data=request.form.get('textarea')
             title=request.form.get('title')
-            file=request.files.get('file')
-            if file:
-                file.save('./uploads/'+file.filename)
+            files=request.files.get('file')
             if request.form.get('secret')=='true':
                 secret=True
                 secret_pw=request.form.get('secret_pw')
             else:
                 secret=False
                 secret_pw=None
-            data_sql=Data_MySql(user_id)
-            data_sql.save_data(title,data,secret,secret_pw)
+            board_id=data_sql.save_data(title,data,secret,secret_pw)
+            file=File()
+            if files:
+                files.save('./uploads/'+files.filename)
+                file_name=files.filename
+                file.save_file(user_id,board_id,file_name)
+            
             if data is not None:
+                data_sql.load_all()
                 return jsonify({'success':True,'title':title,'content':data})
             else:
                 return jsonify({
@@ -92,6 +98,19 @@ def show_search_data():
     else:
         return redirect(url_for('basic'))
 
+@board_bp.route('/check',methods=['POST'])
+def check():
+    user_id=session.get('user_id')
+    if user_id:
+        if request.method=='POST':
+            board_id=request.form.get('board_id')
+            data_mysql=Data_MySql(user_id)
+            result=data_mysql.check_user(board_id)
+            if result:
+                return jsonify({'success':True})
+            else:
+                return jsonify({'success':False})
+
 @board_bp.route('/main/correction',methods=["POST","GET"])
 def correction():
     user_id=session.get('user_id')
@@ -112,10 +131,23 @@ def correction_data():
     user_id=session.get('user_id')
     if user_id:
         board_id=request.args.get('board_id')
+        file=File()
+        file_name=file.load_file(board_id)
+        if file_name:
+            filename=file_name[0]
+        else:
+            filename=None
         data_mysql=Data_MySql(user_id)
         result=data_mysql.load_data(board_id)
-        title,content,secret,secret_pw=result
-        return jsonify({'success':True,'title':title,'content':content,'secret':secret,'secret_pw':secret_pw})
+        title,content,secret,secret_pw,id=result
+        return jsonify({
+            'success':True,
+            'title':title,
+            'content':content,
+            'secret':secret,
+            'secret_pw':secret_pw,
+            'file_name':filename,
+            'user_id':id})
     else:
         return redirect(url_for('basic'))
 
@@ -127,6 +159,13 @@ def update_data():
         title=request.form.get('title')
         content=request.form.get('textarea')
         board_id=request.args.get('board_id')
+        file1=File()
+        file=request.files.get('file')
+        if file:
+            file.save('./uploads/'+file.filename)
+            file_name=file.filename
+            file1.save_file(user_id,board_id,file_name)
+
         if request.form.get('secret')=='true':
             secret=True
             secret_pw=request.form.get('secret_pw')
@@ -161,18 +200,37 @@ def look_board():
 
 @board_bp.route('/profile')
 def user_profile():
-    return render_template('profile.html')
+    user_id=session.get('user_id')
+    if user_id:
+        return render_template('profile.html')
+    else:
+        return redirect(url_for('basic'))
 
 @board_bp.route('/profile/get-data')
 def profile_data():
-    user_id=session.get('user_id')
+    user_id=request.args.get('user_id',session.get('user_id'))
     if user_id:
         mysql=MySql()
         result=mysql.load_all(user_id)
-        if result:
-            return jsonify({'success':True,'data':result})
+        name,school,image=result
+        if image:
+            image_exist=True
         else:
-            return jsonify({'success':False,'message':'뭔가 잘못됨'})
+            image_exist=False
+        if user_id==session.get('user_id'):
+            return jsonify({'success':True,
+                            'btn':True,
+                            'name':name,
+                            'school':school,
+                            'image':image,
+                            'image_exist':image_exist})
+        else:
+            return jsonify({'success':False,
+                            'btn':False,
+                            'name':name,
+                            'school':school,
+                            'image':image,
+                            'image_exist':image_exist})
     else:
         return redirect(url_for('basic'))
 
@@ -186,21 +244,20 @@ def edit_user_data():
     if user_id:
         name=request.form.get('user_name')
         school=request.form.get('user_school')
+        file=request.files.get('fileImage')
+        if file:
+            file.save('./static/uploads/'+file.filename)
+            image_name=file.filename
+        else:
+            image_name=None
         mysql=MySql()
-        mysql.edit_data(user_id,name,school)
-        return jsonify({'success':True})
+        mysql.edit_data(user_id,name,school,image_name)
+        if image_name:
+            return jsonify({'success':True})
+        else:
+            return jsonify({'success':False})
     else:
         return redirect(url_for('basic'))
-
-@board_bp.route('/upload',methods=['POST'])
-def upload():
-    if request.method=='POST':
-        f=request.files.get('file')
-        if f:
-            f.save('./uploads/'+f.filename)
-            return redirect(url_for('board.board'))
-        else:
-            return redirect(url_for('board.board'))
 
 @board_bp.route('/download',methods=['POST'])
 def download():
@@ -209,3 +266,8 @@ def download():
         return send_file(path+request.form.get('file_name'),as_attachment=True)
     else:
         redirect(url_for('board.board'))
+
+@board_bp.route('/profile/other')
+def other_profile():
+    return render_template('other_profile.html')
+

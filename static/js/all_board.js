@@ -104,8 +104,6 @@ document.getElementById('finish').addEventListener('click',function(f){
 })
 
 document.getElementById('look').addEventListener('click',function(a){
-    a.preventDefault()
-
     const checked=document.querySelector('input[name="boardId"]:checked')
 
     if(checked){
@@ -129,5 +127,6 @@ document.getElementById('delete_user').addEventListener('click',function(a) {
 })
 
 document.getElementById('profile').addEventListener('click',function(){
+    fetch('/board/profile/get-data')
     window.location.href='/board/profile'
 })

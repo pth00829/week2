@@ -23,7 +23,8 @@ class MySql:
         user_id varchar(20) PRIMARY KEY,
         user_pw varchar(20),
         user_name varchar(20),
-        user_school varchar(20)
+        user_school varchar(20),
+        user_image TEXT
         )
         '''
         with db.cursor() as cursor:
@@ -112,7 +113,7 @@ class MySql:
 
     def load_all(self,id):
         sql='''
-        SELECT user_name,user_school
+        SELECT user_name,user_school, user_image
         FROM data
         WHERE user_id=%s;
         '''
@@ -122,14 +123,13 @@ class MySql:
             result=cursor.fetchone()
         return result
 
-    def edit_data(self,id,name,school):
+    def edit_data(self,id,name,school,image):
         sql='''
         UPDATE data
-        SET user_name=%s, user_school=%s
+        SET user_name=%s, user_school=%s, user_image=%s
         WHERE user_id=%s;
         '''
 
         with db.cursor() as cursor:
-            cursor.execute(sql,[name,school,id])
+            cursor.execute(sql,[name,school,image,id])
             db.commit()
-            

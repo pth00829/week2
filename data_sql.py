@@ -49,16 +49,18 @@ class Data_MySql:
         with db.cursor() as cursor:
             cursor.execute(sql1,[self.id,title,content,secret,secret_pw])
             db.commit()
+            board_id=cursor.lastrowid
+        return board_id
 
     def load_data(self,board_id):
         sql='''
-        SELECT title, content, secret, secret_pw
+        SELECT title, content, secret, secret_pw, user_id
         FROM board
-        WHERE user_id=%s and board_id=%s
+        WHERE board_id=%s
         '''
 
         with db.cursor() as cursor:
-            cursor.execute(sql,[self.id,board_id])
+            cursor.execute(sql,[board_id])
             result=cursor.fetchone()
 
         return result
@@ -139,6 +141,33 @@ class Data_MySql:
             db.commit()
 
     def load_all(self):
+        sql='''
+        SELECT board_id,title,content
+        FROM board;
+        '''
+
+        with db.cursor() as cursor:
+            cursor.execute(sql)
+            result=cursor.fetchall()
+
+        return result
+
+    def check_user(self,board_id):
+        sql='''
+        SELECT user_id
+        FROM board
+        WHERE board_id=%s;
+        '''
+
+        with db.cursor() as cursor:
+            cursor.execute(sql,[board_id])
+            result=cursor.fetchone()
+        if result[0]==self.id:
+            return True
+        else:
+            return False
+
+    def user_post(self):
         sql='''
         SELECT board_id,title,content
         FROM board
